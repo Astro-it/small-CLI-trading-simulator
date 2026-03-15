@@ -15,6 +15,7 @@ public class StockMenu {
     String BuySell;
     int amount;
     public Position foundPosition = null;
+    public PastTrade Trade = null;
 
     public void BuySellTab(int option){
         while(true){
@@ -70,9 +71,12 @@ public class StockMenu {
                     foundPosition.addShares(amount);
                     System.out.println("You now have " + foundPosition.getShares() + " shares of " + stocks.get(option - 1).getStockName());
                 }
+                Trade = new PastTrade(stockName, TotalCost, amount, "bought");
+                user.getTradeHistory().add(Trade);
 
                 System.out.println("your balance is " + user.getBalance() + "$");
                 foundPosition = null;
+                Trade = null;
                 break;
             }
         }    
@@ -113,11 +117,26 @@ public class StockMenu {
                 else {
                     System.out.println("you do not have any shares of this!");
                 }
+                Trade = new PastTrade(stockName, TotalCost, amount, "Sold");
+                user.getTradeHistory().add(Trade);
 
                 System.out.println("your balance is " + user.getBalance() + "$");
                 foundPosition = null;
                 break;
             }
+        }
+    }
+
+    public void ShowPastTrades(){
+        while(true){
+            System.out.println("YOUR TRADE HISTORY");
+            for(PastTrade trade : user.getTradeHistory()){
+                System.out.println(trade);
+            }
+            System.out.println("0 - back");
+            int Option = getValidInt(sc);
+
+            if(Option == 0){break;}
         }
     }
 
@@ -146,6 +165,7 @@ public class StockMenu {
             for (int i = 0; i < stocks.size(); i++) {
                 System.out.println((i + 1) + " - " + stocks.get(i).getStockName());
             }
+            System.out.println(stocks.size() + 1 + " - Trading History");
             System.out.println("0 - Exit");
             System.out.println("type the number of your option");
 
@@ -153,7 +173,9 @@ public class StockMenu {
             sc.nextLine();
             if(option == 0){
                 break;
-            } else if (option > stocks.size() || option < 0) {
+            } else if(option == stocks.size() + 1){
+                ShowPastTrades();
+            } else if(option > stocks.size() || option < 0) {
                 System.out.println("this option doesn't exist!");
             } else{
                 BuySellTab(option);
