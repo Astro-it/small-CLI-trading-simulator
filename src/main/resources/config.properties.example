@@ -1,0 +1,2 @@
+# Fill in your Finnhub API key here and rename this file to config.properties
+finnhub.api.key=PASTE_YOUR_KEY_HERE
