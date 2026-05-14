@@ -2,11 +2,11 @@ package test;
 
 public class PastTrade {
     private String StockName;
-    private int price;
+    private double price;
     private int BoughtShares;
     private String SoldBought;
 
-    public PastTrade(String StockName, int price, int BoughtShares, String SoldBought){
+    public PastTrade(String StockName, double price, int BoughtShares, String SoldBought){
         this.StockName = StockName;
         this.price = price;
         this.BoughtShares = BoughtShares;
@@ -16,7 +16,7 @@ public class PastTrade {
     @Override
     public String toString() {
         return "Stock: " + StockName +
-                " | Price: " + price +
+                " | Price: $" + price +
                 " | Amount: " +  BoughtShares +
                 " | Order Type: " + SoldBought;
 
@@ -24,7 +24,7 @@ public class PastTrade {
 
     public String getStockName(){return StockName;}
     public String getSoldBought() {return SoldBought;}
-    public int getPrice() {return price;}
+    public double getPrice() {return price;}
     public int getBoughtShares() {return BoughtShares;}
 
 }

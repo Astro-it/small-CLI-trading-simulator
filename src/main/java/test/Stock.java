@@ -2,23 +2,20 @@ package test;
 
 public class Stock {
     private String StockName;
-    private int price;
-    private int AvailableShares;
+    private double price;
+    private String symbol;
 
-    public Stock(String StockName, int price, int AvailableShares){
+    public Stock(String StockName, double price, String symbol){
         this.StockName = StockName;
         this.price = price;
-        this.AvailableShares = AvailableShares;
+        this.symbol = symbol;
     }
 
     public String getStockName() { return StockName;}
-    public int getPrice() { return price;}
-    public int getAvailableShares() { return AvailableShares;}
+    public double getPrice() { return price;}
+    public String getSymbol() { return symbol;}
 
-    public void reduceAvailableShares(int amount){
-        AvailableShares -= amount;
-    }
-    public void increaseAvailableShares(int amount){
-        AvailableShares += amount;
+    public void refreshPrice(StockService service) {
+        this.price = service.updatePrice(this.symbol);
     }
 }

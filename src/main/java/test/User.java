@@ -17,7 +17,7 @@ public class User {
     public ArrayList<Position> getPortfolio() { return portfolio;}
     public ArrayList<PastTrade> getTradeHistory() { return TradeHistory;}
 
-    public void withdraw(int TotalCost){
+    public void withdraw(double TotalCost){
         balance -= TotalCost;
     }
     public void deposit(double TotalCost) {

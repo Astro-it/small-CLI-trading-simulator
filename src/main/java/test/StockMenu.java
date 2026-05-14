@@ -17,12 +17,14 @@ public class StockMenu {
     public Position foundPosition = null;
     public PastTrade Trade = null;
 
+    StockService service = new StockService();
+    public String Symbol;
+    public double livePrice;
+
     public void BuySellTab(int option){
         while(true){
-
             System.out.println("Name: " + stocks.get(option - 1).getStockName());
             System.out.println("Price: " + stocks.get(option - 1).getPrice());
-            System.out.println("Available shares: " + stocks.get(option - 1).getAvailableShares());
             System.out.println("Buy/Sell");
             System.out.println("0 - Back");
             BuySell = sc.nextLine();
@@ -44,16 +46,15 @@ public class StockMenu {
             System.out.println("0 - Back");
             amount = getValidInt(sc);
             sc.nextLine();
-            int price = stocks.get(option - 1).getPrice();
-            int TotalCost = (price * amount);
+            double price = stocks.get(option - 1).getPrice();
+            double TotalCost = (price * amount);
 
-            if (TotalCost > user.getBalance() || amount < 0) {
-                System.out.println("this transaction cannot be processed");
-            } else if (amount == 0) {
+            if (amount == 0) {
                 break;
+            } else if (TotalCost > user.getBalance() || amount < 0) {
+                System.out.println("this transaction cannot be processed");
             } else {
                 user.withdraw(TotalCost);
-                stocks.get(option - 1).reduceAvailableShares(amount);
 
                 for (Position p : user.getPortfolio()) {
                     if (p.getStockName().equals(stockName)) {
@@ -99,16 +100,15 @@ public class StockMenu {
             System.out.println("0 - Back");
             amount = getValidInt(sc);
             sc.nextLine();
-            int price = stocks.get(option - 1).getPrice();
-            int TotalCost = (price * amount);
+            double price = stocks.get(option - 1).getPrice();
+            double TotalCost = (price * amount);
 
-            if (amount > foundPosition.getShares() || amount < 0) {
-                System.out.println("this transaction cannot be processed");
-            } else if (amount == 0) {
+            if (amount == 0) {
                 break;
+            } else if (amount > foundPosition.getShares() || amount < 0) {
+                System.out.println("this transaction cannot be processed");
             } else {
                 user.deposit(TotalCost);
-                stocks.get(option - 1).increaseAvailableShares(amount);
 
                 if (foundPosition != null) {
                     foundPosition.removeShares(amount);
@@ -129,6 +129,9 @@ public class StockMenu {
 
     public void ShowPastTrades(){
         while(true){
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
             System.out.println("YOUR TRADE HISTORY");
             for(PastTrade trade : user.getTradeHistory()){
                 System.out.println(trade);
@@ -156,12 +159,17 @@ public class StockMenu {
     }
 
     public void menu(){
-        stocks.add(new Stock("Gold", 1900, 10000));
-        stocks.add(new Stock("NVIDIA", 600, 5000));
-        stocks.add(new Stock("AMD", 120, 8000));
+        String[] watchList = {"AAPL", "NVDA", "AMD"};
 
+        for (String symbol : watchList) {
+            livePrice = service.updatePrice(symbol);
+            stocks.add(new Stock(symbol, livePrice, symbol));
+        }
 
         while(true){
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
             for (int i = 0; i < stocks.size(); i++) {
                 System.out.println((i + 1) + " - " + stocks.get(i).getStockName());
             }
@@ -178,6 +186,7 @@ public class StockMenu {
             } else if(option > stocks.size() || option < 0) {
                 System.out.println("this option doesn't exist!");
             } else{
+                stocks.get(option - 1).refreshPrice(service);
                 BuySellTab(option);
             }
         }
